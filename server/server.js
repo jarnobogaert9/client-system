@@ -1,9 +1,12 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT;
 const mongoClient = require('mongodb').MongoClient;
 const mongoURL = 'mongodb+srv://jarno_bogaert:Jarno0412@user-database-rovks.gcp.mongodb.net/test?retryWrites=true';
+
+app.use(cors());
 
 let db;
 // Connect to mongo db
@@ -13,7 +16,7 @@ mongoClient.connect(mongoURL, (err, client) => {
   db = client.db('user-database');
 });
 
-app.get('/', (req, res) => {
+app.get('/users', (req, res) => {
   db.collection('users').find().toArray((err, results) => {
     if (err) {
       console.log(err);
