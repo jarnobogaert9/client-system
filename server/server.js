@@ -19,32 +19,31 @@ mongoClient.connect(mongoURL, { useNewUrlParser: true }, (err, client) => {
   db = client.db('user-database');
 });
 
-// Get all users in database
-app.get('/users', (req, res) => {
+// Get all clients from database
+app.get('/clients', (req, res) => {
   db.collection('users').find().toArray((err, results) => {
     if (err) {
       console.log(err);
       res.sendStatus(500);
       return;
     }
-
     res.send(results);
   });
 });
 
-// Insert user into database when doing post method to this route
+// Insert client into database when doing post method to this route
 app.post('/add/:name/:pwd', (req, res) => {
   // Get values of the url
   let name = req.params.name;
   let pwd = req.params.pwd;
   // Make literal object
-  let user = {
+  let client = {
     name: name,
     pwd: pwd
   }
-  console.log(user);
-  // Insert user
-  db.collection('users').save(user, (err, result) => {
+  console.log(client);
+  // Insert client
+  db.collection('users').save(client, (err, result) => {
     if (err) {
       console.log(err);
       res.sendStatus(500);
@@ -55,25 +54,41 @@ app.post('/add/:name/:pwd', (req, res) => {
   });
 });
 
-// Update user in database
+// Update client in database
 app.post('/update/:id/:name/:pwd', (req, res) => {
   let id = req.params.id;
   let name = req.params.name;
   let pwd = req.params.pwd;
 
-  let item = {
+  let client = {
     name: name,
     pwd: pwd
   }
 
-  // objectId method is required to convert it to an object id (mongodb is strong typed) & the '$set' is also required because we need an atomic operator and now mongo db knows which part that will be updated
-  db.collection('users').updateOne({"_id": objectId(id)},{$set: item}, (err) => {
+  // objectId method is required to convert id to an object id (mongodb is strong typed) & the '$set' is also required because we need an atomic operator and now mongo db knows which part we will update
+  db.collection('users').updateOne({"_id": objectId(id)},{$set: client}, (err) => {
     if (err) {
       console.log(err);
       return;
     }
+    console.log(`Client with id = ${id} updated`);
     res.sendStatus(200);
-    console.log(`User with id = ${id} updated`);
+  });
+});
+
+
+// Delete client when going to this route with specific id
+app.post('/delete/:id', (req, res) => {
+  let id = req.params.id;
+  let item = {_id: objectId(id)};
+  // Deletes the user
+  db.collection('users').deleteOne(item, (err) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log('Removed client');
+    res.sendStatus(200);
   });
 });
 
