@@ -6,7 +6,7 @@ const app = express();
 const port = process.env.PORT;
 const mongoClient = require('mongodb').MongoClient;
 const objectId = require('mongodb').ObjectID;
-const mongoURL = 'mongodb+srv://jarno_bogaert:Jarno0412@user-database-rovks.gcp.mongodb.net/test?retryWrites=true';
+const mongoURL = 'mongodb+srv://jarno_bogaert:Clients123@clients-tolyx.gcp.mongodb.net/test?retryWrites=true';
 
 app.use(cors());
 app.use(morgan('dev'));
@@ -16,12 +16,12 @@ let db;
 mongoClient.connect(mongoURL, { useNewUrlParser: true }, (err, client) => {
   if (err) return console.log(err);
   console.log('Connected to mongo db');
-  db = client.db('user-database');
+  db = client.db('clients');
 });
 
 // Get all clients from database
 app.get('/clients', (req, res) => {
-  db.collection('users').find().toArray((err, results) => {
+  db.collection('clients').find().toArray((err, results) => {
     if (err) {
       console.log(err);
       res.sendStatus(500);
@@ -43,7 +43,7 @@ app.post('/add/:name/:pwd', (req, res) => {
   }
   console.log(client);
   // Insert client
-  db.collection('users').save(client, (err, result) => {
+  db.collection('clients').save(client, (err, result) => {
     if (err) {
       console.log(err);
       res.sendStatus(500);
@@ -66,7 +66,7 @@ app.post('/update/:id/:name/:pwd', (req, res) => {
   }
 
   // objectId method is required to convert id to an object id (mongodb is strong typed) & the '$set' is also required because we need an atomic operator and now mongo db knows which part we will update
-  db.collection('users').updateOne({"_id": objectId(id)},{$set: client}, (err) => {
+  db.collection('clients').updateOne({"_id": objectId(id)},{$set: client}, (err) => {
     if (err) {
       console.log(err);
       return;
@@ -82,7 +82,7 @@ app.post('/delete/:id', (req, res) => {
   let id = req.params.id;
   let item = {_id: objectId(id)};
   // Deletes the user
-  db.collection('users').deleteOne(item, (err) => {
+  db.collection('clients').deleteOne(item, (err) => {
     if (err) {
       console.log(err);
       return;
