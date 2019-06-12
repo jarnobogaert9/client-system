@@ -5,14 +5,16 @@ class Modal extends Component {
         return (
                 <div className="bg">
                     <div className="modal">
-                        <button className="btn" onClick={this.props.closePopup}>Close</button>
+                        <button className="btn light" onClick={this.props.closePopup}>Close</button>
                         <form>
                             <div className="form-group">
+                                <label>Name</label>
                                 <input autoFocus onChange={this.props.handleName} placeholder="Enter name" value={
                                     this.props.name ? this.props.name : ''
                                 }></input>
                             </div>
                             <div className="form-group">
+                                <label>Email</label>
                                 <input onChange={this.props.handleEmail} placeholder="Enter email" value={
                                     this.props.email ? this.props.email : ''
                                 }></input>

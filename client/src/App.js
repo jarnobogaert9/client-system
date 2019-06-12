@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Modal from './Components/Modal';
+import AdminPanel from './Components/AdminPanel';
 import axios from 'axios';
 
 class App extends Component {
@@ -12,7 +13,8 @@ class App extends Component {
       name: '',
       email: '',
       btnText: '',
-      editId: ''
+      editId: '',
+      authenticated: false
     }
   }
 
@@ -79,6 +81,38 @@ class App extends Component {
     })
   }
 
+  handleUsername = (e) => {
+    this.setState({
+      username: e.target.value
+    })
+  }
+
+  handlePwd = (e) => {
+    this.setState({
+      pwd: e.target.value
+    })
+  }
+
+  login = () => {
+    if (this.state.username === 'admin' && this.state.pwd === 'admin') {
+      console.log('Okay');
+      this.setState({
+        authenticated: true
+      })
+    } else {
+      console.log('Not okay');
+      alert('The credentials were wrong! Try again.');
+    }
+  }
+
+  logout = () => {
+    this.setState({
+      authenticated: false,
+      username: '',
+      pwd: ''
+    })
+  }
+
   addClient = (e) => {
     e.preventDefault();
     let client = {
@@ -137,52 +171,62 @@ class App extends Component {
   render() {
     return (
       <div>
-        <div className="container">
-        <br/>
-        <br/> 
-        <button className="btn primary" onClick={this.showModal} id="add">New Client</button>
-        <br/>
-        <br/>
-          <table>
-            <thead>
-              <tr>
-                <td>#</td>
-                <td>Name</td>
-                <td>Email</td>
-                <td>Action</td>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.clients.map((clients, i) => {
-                return (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{clients.name}</td>
-                    <td>{clients.email}</td>
-                    <td>
-                      <button className="btn second mr-1" onClick={this.showModal} id={clients._id}>Edit</button>
-                      <button className="btn danger" onClick={this.removeClient} id={clients._id}>Remove</button>
-                    </td>
+         { this.state.authenticated ? 
+           <div className="container">
+            <br/>
+            <br/> 
+            <button className="btn primary" onClick={this.showModal} id="add">New Client</button>
+            <button className="btn logout" onClick={this.logout}>Log Out</button>
+            <br/>
+            <br/>
+              <table>
+                <thead>
+                  <tr>
+                    <td>#</td>
+                    <td>Name</td>
+                    <td>Email</td>
+                    <td>Action</td>
                   </tr>
-                )
-              })}
-              {this.state.showPopup ?
-                <Modal
-                  closePopup={this.togglePopup}
-                  handleEmail={this.handleEmail}
-                  handleName={this.handleName}
-                  addClient={this.addClient}
-                  editClient={this.editClient}
-                  btnText={this.state.btnText}
-                  name={this.state.name}
-                  email={this.state.email}
-                />
-                : null
-              }
-
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {this.state.clients.map((clients, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td>{clients.name}</td>
+                        <td>{clients.email}</td>
+                        <td>
+                          <button className="btn second mr-1" onClick={this.showModal} id={clients._id}>Edit</button>
+                          <button className="btn danger" onClick={this.removeClient} id={clients._id}>Remove</button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                  {this.state.showPopup ?
+                    <Modal
+                      closePopup={this.togglePopup}
+                      handleEmail={this.handleEmail}
+                      handleName={this.handleName}
+                      addClient={this.addClient}
+                      editClient={this.editClient}
+                      btnText={this.state.btnText}
+                      name={this.state.name}
+                      email={this.state.email}
+                    />
+                    : null
+                  }
+                </tbody>
+              </table>
+           </div>
+          
+          : 
+            <AdminPanel
+            handleUsername={this.handleUsername}
+            handlePwd={this.handlePwd}
+            login={this.login}
+            />
+          }
+       
       </div>
     );
   }
