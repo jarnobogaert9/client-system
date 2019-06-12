@@ -6,10 +6,14 @@ const app = express();
 const port = process.env.PORT;
 const mongoClient = require('mongodb').MongoClient;
 const objectId = require('mongodb').ObjectID;
-const mongoURL = 'mongodb+srv://jarno_bogaert:Clients123@clients-tolyx.gcp.mongodb.net/test?retryWrites=true';
+//const mongoURL = 'mongodb+srv://admin:admin@client-system-qxci4.mongodb.net/test?retryWrites=true&w=majority';
+const mongoURL = 'mongodb+srv://admin:admin@clients-tolyx.gcp.mongodb.net/test?retryWrites=true&w=majority';
+
 
 app.use(cors());
 app.use(morgan('dev'));
+app.use(express.urlencoded({extended: true}));
+app.use(express.json());
 
 let db;
 // Connect to mongo db
@@ -32,16 +36,17 @@ app.get('/clients', (req, res) => {
 });
 
 // Insert client into database when doing post method to this route
-app.post('/add/:name/:pwd', (req, res) => {
+app.post('/add', (req, res) => {
   // Get values of the url
-  let name = req.params.name;
-  let pwd = req.params.pwd;
+  let name = req.body.name;
+  let email = req.body.email;
   // Make literal object
   let client = {
     name: name,
-    pwd: pwd
+    email: email
   }
   console.log(client);
+  
   // Insert client
   db.collection('clients').save(client, (err, result) => {
     if (err) {
@@ -55,14 +60,14 @@ app.post('/add/:name/:pwd', (req, res) => {
 });
 
 // Update client in database
-app.post('/update/:id/:name/:pwd', (req, res) => {
+app.post('/update/:id', (req, res) => {
   let id = req.params.id;
-  let name = req.params.name;
-  let pwd = req.params.pwd;
+  let name = req.body.name;
+  let email = req.body.email;
 
   let client = {
     name: name,
-    pwd: pwd
+    email: email
   }
 
   // objectId method is required to convert id to an object id (mongodb is strong typed) & the '$set' is also required because we need an atomic operator and now mongo db knows which part we will update
@@ -78,7 +83,7 @@ app.post('/update/:id/:name/:pwd', (req, res) => {
 
 
 // Delete client when going to this route with specific id
-app.post('/delete/:id', (req, res) => {
+app.get('/delete/:id', (req, res) => {
   let id = req.params.id;
   let item = {_id: objectId(id)};
   // Deletes the user
