@@ -11,7 +11,8 @@ class App extends Component {
       showPopup: false,
       name: '',
       email: '',
-      btnText: ''
+      btnText: '',
+      editId: ''
     }
   }
 
@@ -21,8 +22,19 @@ class App extends Component {
 
   togglePopup = () => {
     this.setState({
-      showPopup: !this.state.showPopup
+      showPopup: !this.state.showPopup,
     });
+
+    if (!this.state.name == '') {
+      this.setState({
+        name: ''
+      })
+    }
+    if (!this.state.email == '') {
+      this.setState({
+        email: ''
+      })
+    }
   }
 
   showModal = (e) => {
@@ -36,8 +48,21 @@ class App extends Component {
         btnText: 'Edit Client',
         editId: e.target.id
       })
+      this.loadData(e.target.id);
     }
     this.togglePopup();
+  }
+
+  loadData = (id) => {
+    for (const client of this.state.clients) {
+      if (client._id == id) {
+        console.log('vul in');
+        this.setState({
+          name: client.name,
+          email: client.email
+        })
+      }
+    }
   }
 
   handleEmail = (e) => {
@@ -149,6 +174,8 @@ class App extends Component {
                   addClient={this.addClient}
                   editClient={this.editClient}
                   btnText={this.state.btnText}
+                  name={this.state.name}
+                  email={this.state.email}
                 />
                 : null
               }

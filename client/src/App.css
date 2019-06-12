@@ -34,7 +34,15 @@ table {
 
 table, td {
   border-collapse: collapse;
-  border: 1px solid #b1b1b1;
+  /* border: 1px solid #b1b1b1; */
+}
+
+tr, thead {
+  border-bottom: 1px solid #eee;
+}
+
+tr:last-child {
+  border: none;
 }
 
 td {
