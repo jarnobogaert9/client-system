@@ -1,6 +1,6 @@
 # Client System
 
-This application is build to manage your clients. It is a place where you can store all the important details about a specific client.
+This web application is built to manage your clients. With this web application you can store all the important details about your clients.
 
 ## Structure
 
